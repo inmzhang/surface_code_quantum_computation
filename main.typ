@@ -89,7 +89,7 @@ $
 
 where
 $
-  |0〉_L = 1 / sqrt(2) |000〉 + |111〉, |1〉_L = 1 / sqrt(2) |000〉 - |111〉,
+  |+〉_L = 1 / sqrt(2) |000〉 + |111〉, |-〉_L = 1 / sqrt(2) |000〉 - |111〉,
 $
 
 And we can define the logical operator pairs $X_L = X X X, Z_L = Z I I$
