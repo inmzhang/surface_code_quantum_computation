@@ -46,7 +46,15 @@ anticommutes with a stabilizer $S$:
 
 $|Psi〉 = highlightMath(S)|Psi〉 arrow.long.r^E E|Psi〉 = E S|Psi〉 = highlightMath(-S) E|Psi〉$
 
----
+== Identify Errors
+
+For the state $|Psi〉 = 1 / sqrt(2) |000〉 + |111〉 arrow.stroked angle.l +X X X, + Z Z I, + I Z Z〉$:
+
+- $ X_0|Psi〉 = 1 / sqrt(2) |100〉 + |011〉 arrow.stroked angle.l +X X X, highlightMath(- Z Z I), + I Z Z〉$:
+- $ X_1|Psi〉 = 1 / sqrt(2) |010〉 + |101〉 arrow.stroked angle.l +X X X, highlightMath(- Z Z I), highlightMath(- I Z Z)〉$:
+- $ X_2|Psi〉 = 1 / sqrt(2) |001〉 + |110〉 arrow.stroked angle.l +X X X, + Z Z I, highlightMath(+ I Z Z)〉$:
+
+By measuring the stabilizers, we get the so-called _syndromes_.
 
 == Stabilizer Projector
 
@@ -60,20 +68,8 @@ Two perspectives of the above circuit:
 
 + If $|Psi〉= plus.minus U |Psi〉$ , then it's a simple phase kickback to measure
   the eigenvalue, i.e. the sign of the stabilizer.
-+ Otherwise, it plays the role of a projector operator $(I plus.minus U)/2 |Psi〉$ with
++ Meanwhile, it plays the role of a projector operator $(I plus.minus U)/2 |Psi〉$ with
   the measurement backaction. Continuous errors will be digitized as Pauli errors.
-
----
-
-== Identify Errors
-
-For the state $|Psi〉 = 1 / sqrt(2) |000〉 + |111〉 arrow.stroked angle.l +X X X, + Z Z I, + I Z Z〉$:
-
-- $ X_0|Psi〉 = 1 / sqrt(2) |100〉 + |011〉 arrow.stroked angle.l +X X X, highlightMath(- Z Z I), + I Z Z〉$:
-- $ X_1|Psi〉 = 1 / sqrt(2) |010〉 + |101〉 arrow.stroked angle.l +X X X, highlightMath(- Z Z I), highlightMath(- I Z Z)〉$:
-- $ X_2|Psi〉 = 1 / sqrt(2) |001〉 + |110〉 arrow.stroked angle.l +X X X, + Z Z I, highlightMath(+ I Z Z)〉$:
-
-By measuring the stabilizers, we get the so-called _syndromes_.
 
 == Logical Qubit
 
@@ -332,6 +328,19 @@ universal quantum computation @gidney2024magic.
 #figure(
   image("./images/google_surface_code.png", width: 90%), caption: "Google d=3,5,7 surface code",
 )
+
+
+= Other topics
+
+---
+
+- Decoding algorithms, real-time decoding...
+
+- Concrete circuit construction for logical operations...
+
+- Compile quantum algorithm down to logical circuit to physical circuit...
+
+- Other quantum codes...
 
 #focus-slide[
   #text(size: 2.0em)[
