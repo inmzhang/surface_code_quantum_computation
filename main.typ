@@ -2,6 +2,7 @@
 #import "@preview/quill:0.5.0": *
 #import "@preview/touying:0.5.3": *
 #import themes.metropolis: *
+#import "@preview/fletcher:0.5.2" as fletcher: diagram, node, edge
 
 #import "@preview/numbly:0.1.0": numbly
 
@@ -11,6 +12,7 @@
   ),
 )
 #show link: underline
+#show figure: set align(center + horizon)
 #show figure.caption: set text(10pt)
 
 #set heading(numbering: numbly("{1}.", default: "1.1"))
@@ -64,13 +66,15 @@
   )
   #colbreak()
   We demonstrated $d=3$ surface code on _Zuchongzhi2_ processor in
-  2022@zhao2022realization. The hardware has been improved since then#footnote[The design is optimized for targeted quantum error correction experiments.]:
+  2022@zhao2022realization. The hardware has been improved since then:
   - 100+ qubits with tunable couplers
-  - average $T_1 tilde 60 mu s$
-  - parallel single qubit gate fidelity $tilde 99.9%$
-  - parallel CZ gate fidelity $tilde 99.4%$
-  - parallel readout fidelity $tilde 98.5%$
-  - better support for _repeated measurements_ and _reset_ operations
+  - $T_1 tilde 50 mu s$
+  - Parallel 1Q gate $tilde 99.9%$
+  - Parallel CZ gate fidelity $tilde 99.5%$
+  - Parallel repeated measurement $tilde 98%$
+  - Faster _repeated measurements_
+  - Support _reset_ operation
+  - The design is optimized for targeted quantum error correction experiments
 ]
 
 = Surface Code: A Practical Way towards Fault-Tolerant Quantum Computation
@@ -133,17 +137,11 @@
 _Logical Pauli gates_(or corrections from decoding) can be tracked in software
 and do not require physical operations on hardware. Takes *zero* time.
 
-#columns(
-  2,
-)[
-  #figure(
-    image("./images/byproduct_before.png", width: 80%), caption: "Logical Circuit(Raw)",
-  )
-  #colbreak()
-  #figure(
-    image("./images/byproduct_after.png", width: 80%), caption: "Equivalent Logical Circuit After Pushing Paulis",
-  )
-]
+#figure(
+  stack(
+    dir: ltr, spacing: 2mm, image("./images/byproduct_before.png", width: 48%), image("./images/byproduct_after.png", width: 50%),
+  ), caption: "Pushing Pauli Gates Through the Circuit",
+)
 
 == Logical Operations: H
 
@@ -180,20 +178,13 @@ It can be achieved by merge and split operations between two logical qubits.
 _Logical S gate_ can be implemented via gate teleportation@gidney2024inplace.
 Takes *$3d^3$* spacetime volume.
 
-#columns(
-  2,
-)[
-  #linebreak()
-  #figure(
-    quantum-circuit(
+#figure(
+  stack(
+    dir: ltr, spacing: 20mm, quantum-circuit(
       lstick($|Psi〉$), mqgate($M_(Z Z)$, n: 2), [\ ], lstick($|+〉$), 1, meter(label: $M_Y$), scale: 200%,
-    ), caption: [Logical S Gate #footnote[Pauli corrections conditioned on the measurement results are not plotted.]],
-  )
-  #colbreak()
-  #figure(
-    image("./images/s_zx_diagram.png", width: 50%), caption: "Logical S Gate ZX Diagram",
-  )
-]
+    ), image("./images/s_zx_diagram.png", width: 25%),
+  ), caption: [Logical S Gate #footnote[Pauli corrections conditioned on the measurement results are not plotted.]],
+)
 
 == Logical Operations: CNOT
 
@@ -227,76 +218,124 @@ high-fidelity magic state is as cheap as a logical CNOT gate#footnote[
 
 = _TQEC_: Design Automation for Surface Code Quantum Computation
 
-== _TQEC_ Community
+== _TQEC_
 
-- _TQEC_ is an open-source community for design automation of Topological Quantum
-  Error Correction, currently focusing on surface code quantum computation. It is
-  organized by Austin G. Fowler from Google Quantum AI.
+- _TQEC_ is an open-source community for design automation of surface code quantum
+  computation. It is organized by Austin G. Fowler from Google Quantum AI.
 
 - We are building the tools to manage the complexity of scalable circuit
-  compilation, arrangement optimization.
+  compilation, arrangement optimization. It's not for good, but necessary...
 
-- It's not for good, but necessary...
-
-- The code is open-source and available on GitHub: https://github.com/tqec/tqec.
+- The code is open-source and available on GitHub: https://github.com/tqec/tqec. #footnote[Disclaimer: The author is one of the core maintainers of _TQEC_.]
   It's still in the very early stage.
 
-== High-level Workflow
+== _TQEC_ Workflow(Possibly)
 
-The workflow for compiling a quantum algorithm or a general logical quantum
-circuit to the physical instructions maybe:
+#let tqec-color = gradient.radial(red.lighten(80%), red, center: (30%, 20%), radius: 80%) 
 
-+ Write the quantum algorithm in a high-level quantum programming language like `Q#` or `Qualtran`.
+#diagram(
+  node-stroke: .1em,
+  node-fill: gradient.radial(blue.lighten(80%), blue, center: (30%, 20%), radius: 80%),
+  spacing: 4em,
+  edge((-1,0), "r", "-|>", `Algorithm`, label-pos: 0, label-side: center),
+  node((0,0), `QPL`, radius: 2.5em),
+  edge(`compile`, "-|>"),
+  node((1,0), `Logical Circuit`, radius: 2.5em),
+  edge(`trans`, "-|>"),
+  node((2,0), `ZX-Calculus`, radius: 2.5em, fill: tqec-color),
+  edge(`compile`, "-|>", label-pos: 0.5, label-side: center),
+  node((2,1), `Spacetime Structure`, radius: 2.5em, fill: tqec-color),
+  edge(`compile`, "-|>"),
+  node((3,1), `Physical Circuit`, radius: 2.5em, fill: tqec-color),
+  edge(`transpile`, "-|>", label-pos: 0.5, label-side: center),
+  node((3,0), `Hardware/Simulator`, radius: 2.5em),
+  edge((2,0), (2,0), `optimize`, "--|>", bend: 130deg),
+)
 
-+ Compile and optimize the quantum algorithm with _ZX-calculus_.
 
-+ Compile the ZX-diagram representation to a 3D surface code spacetime structure
-  with `TQEC`.
+== `ZXGraph` and `BlockGraph` Representation
 
-+ Compile the 3D spacetime structure to the physical instructions for the quantum
-  hardware with `TQEC`.
+In `TQEC`, we represent a logical computation by either a `ZXGraph` or a `BlockGraph`.
 
-== TQEC
+There is strong correspondence between the two representations:
 
-- `TQEC` provides a programmable 3D spacetime representation for surface code, and
-its corresponding ZX diagram representation.
+#figure(
+  stack(
+    dir: ltr, spacing: 20mm,
+    image("./images/logical_cnot_zx.png", width: 30%),
+    image("./images/logical_cnot.png", width: 25%),
+  ), caption: [Logical CNOT Representation],
+)
 
-#columns(
-  2,
-)[
-  #figure(
-    image("./images/logical_cnot.png", width: 65%), caption: "Logical CNOT Spacetime Diagram",
-  )
-  #colbreak()
-  #figure(
-    image("./images/logical_s_correlation.png", width: 80%), caption: "Logical S Spacetime Diagram",
-  )
-]
+---
 
-- Constructing the detectors in the QEC circuits automatically.
+To build a logical computation, we can either:
 
-- Finding the logical observables(correlation surfaces) in the surface code
-  quantum computation automatically.
+- Build interactively with 3D model tool like SketchUp. 
 
-- Transpilation between the ZX-digram representation and the 3D spacetime
-  representation.
+- Build programmatically with Python API.
 
-- Compiling the 3D spacetime representation to the a simulatable `stim` circuit.
+Currently, only limited building blocks are implemented. And the compilation from a general `ZXGraph` to `BlockGraph` is not supported yet.
 
-- Currently, only limited building blocks are implemented. We can construct and
-  compile a logical CNOT gate. The compiled circuits were tested on Google's
-  hardware.
+#figure(
+  image("./images/sketchup.png", width: 30%), caption: [SketchUp Model of a Logical CNOT],
+)
+
+== Implement `Block`s
+
+Represent local circuits as `Plaquette` and compose the `Plaquette`s with the pattern specified by the `Template` to build scalable circuits.
+
+#figure(
+  image("./images/impl_block.png", width: 60%),
+  caption: [Build a `Cube` from `Template` and `Plaquette`s]
+)
+
+// Figure for Logical Memory Cube -> Template -> Layer of Plaquettes
+
+== Compose `Block`s
+
+// Use Logical CNOT for example
+
+== Find Observables and Detectors Automatically
+
+- The complete set of _observables_ supported by the logical computation can be found with the notion of `Correlation Surface`:
+
+#figure(
+  image("./images/logical_s_correlation.png", width: 30%), caption: [Correlation Surface],
+)
+
+- The possible _detectors_ in the circuit can be constructed automatically by matching the creation and destruction stabilizer flows.
+
+== Run the Circuit on Hardware/Simulator
+
+The output circuit is of `.stim` format, and can be simulated with `stim` stabilizer simulator efficiently(when there is no non-Clifford gates). Here we show the simulation results of a single logical CNOT gate:
+
+#figure(
+  stack(
+    dir: ltr, spacing: 2mm,
+    image("./images/XIXX.png", width: 25%),
+    image("./images/IXIX.png", width: 25%),
+    image("./images/ZIZI.png", width: 25%),
+    image("./images/IZZZ.png", width: 25%),
+  ), caption: [Logical CNOT Representation],
+)
+
+Additionally, we have ran the circuits produced by `TQEC` on Google's 105-qubit Sycamore processor. The paper introducing the `TQEC` tool as well as the experimental results is in preparation.
 
 = Challenges and Future Directions
 
 ---
 
+- Real-time decoding: tradeoff between decoding speed and accuracy.
+
 - Error sources that have effects under ultra-low error rate region, e.g. cosmic
   rays.
 
-- Real-time decoding: tradeoff between decoding speed and accuracy.
+- Resource optimization for large-scale quantum computation: optimize for compact spacetime layout.
 
 - The hardware/software architecture of large-scale FT quantum computer.
+
+- ...
 
 #focus-slide[
   #text(size: 2.0em)[
@@ -306,7 +345,9 @@ its corresponding ZX diagram representation.
   #text(
     size: 0.8em,
   )[
-    The slides are available on #link("https://github.com/inmzhang/surface_code_quantum_computation")[Github].
+    The slides are available at
+    
+     https://github.com/inmzhang/surface_code_quantum_computation.
   ]
 ]
 
