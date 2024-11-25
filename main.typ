@@ -278,15 +278,15 @@ To build a logical computation, we can either:
 Currently, only limited building blocks are implemented. And the compilation from a general `ZXGraph` to `BlockGraph` is not supported yet.
 
 #figure(
-  image("./images/sketchup.png", width: 30%), caption: [SketchUp Model of a Logical CNOT],
+  image("./images/sketchup.png", width: 30%), caption: [Computation Building Blocks in SketchUp],
 )
 
 == Implement `Block`s
 
-Represent local circuits as `Plaquette` and compose the `Plaquette`s with the pattern specified by the `Template` to build scalable circuits.
+Represent local circuits as `Plaquette` and compose the `Plaquette`s with the pattern specified by the `Template` to build scalable circuits. Different layers of `Plaquette`s compose a `Block`, e.g. Initialization Layer -> Memory Layer -> Measurement Layer.
 
 #figure(
-  image("./images/impl_block.png", width: 60%),
+  image("./images/impl_block.png", width: 50%),
   caption: [Build a `Cube` from `Template` and `Plaquette`s]
 )
 
@@ -294,7 +294,19 @@ Represent local circuits as `Plaquette` and compose the `Plaquette`s with the pa
 
 == Compose `Block`s
 
-// Use Logical CNOT for example
+#columns(2)[
+  #figure(image("./images/logical_cnot.png", width: 80%))
+  #colbreak()
+
+  - `Pipe` occupies no spacetime volume, and is used to replace the plaqeuttes in the `Cube`s it connects.
+
+  - Vertical `Pipe` replaces the `Init`(`Meas`) layer of the top(bottom) `Cube` with a `Memory` layer.
+
+  - Horizontal `Pipe` replaces the boundary plaquettes of weight-2 stabilizer measurements with weight-4 stabilizer measurements.
+
+  - `Pipe`s with Hadamard transition is more complex, but still replacement rules.
+
+]
 
 == Find Observables and Detectors Automatically
 
