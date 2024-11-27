@@ -20,11 +20,11 @@
 
 #title-slide()
 
-// = Outline <touying:hidden>
-//
-// #outline(title: none, indent: 1em, depth: 1)
+= Outline <touying:hidden>
 
-= Quantum Error Correction: Where We Are?
+#outline(title: none, indent: 1em, depth: 1)
+
+= QEC: Where We Are?
 
 == Why do we need QEC?
 
@@ -104,11 +104,11 @@
   - A high error threshold: near $1%$
   - 2D Nearest-neighbor connectivity: suitable for superconducting qubits
   - Good decoders available: MWPM, Union-Find, Tensor Network, Neural Network
-  - Mature protocols for logical operations: lattice surgery, transversal gates
+  - Developed protocols for logical operations: lattice surgery, transversal gates
 
   === Cons
 
-  - High resource overhead: vanishing encoding rate($1/d^2$)
+  - Resource overhead: vanishing encoding rate($1/d^2$)
 ]
 
 == Logical Operations: Initialization/Measurement
@@ -123,8 +123,8 @@
     *$O(1)$* time.
 
   - Logical init/meas in Y basis requires more complex circuits, which maps between
-    the logical Y operator and the product of specific stabilizers, takes *$d/2$*
-    time.@gidney2024inplace
+    the logical Y operator and the product of stabilizers, takes *$d/2$*
+    time@gidney2024inplace.
 
   #colbreak()
   #figure(
