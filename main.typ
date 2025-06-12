@@ -244,7 +244,7 @@ vector. The stabilizer representation comes to rescue.
     column-gutter: 2em,
     align: center + horizon,
     [
-      #image("images/below-threhsold-google.png") #v(0.1em) $d=3, 5, 7$ Surface Code \ *Below Threshold* \ Google 2024@acharya2024quantum
+      #image("images/below-threshold-google.png") #v(0.1em) $d=3, 5, 7$ Surface Code \ *Below Threshold* \ Google 2024@acharya2024quantum
     ],
     [
       #image("images/color-google.png") #v(0.1em) $d=3,5$ Color Code \ Google 2024@lacroix2024
@@ -317,6 +317,53 @@ vector. The stabilizer representation comes to rescue.
   #figure(image("images/time-boundary-3d.png", width: 40%))
 ]
 
+== Lattice Surgery
+
+_Lattice Surgery_@horsman2012 connects the boundaries of surface codes and *correlates the
+logical operators* in spacetime.
+
+#grid(
+  columns: (1fr, 1fr),
+  column-gutter: 5em,
+  image("images/mzz.png"), image("images/mzz-3d.png", width: 60%),
+)
+
+We can fault-tolerantly implement $M_(Z Z)$ and $M_(X X)$ parity measurements for
+surface codes with lattice surgery. They are the true primitives for fault-tolerant
+surface code computation instead of CNOT/CZ gates. It's kind of MBQC-style computation.
+
+#place(top + right, dy: 25pt)[
+  #align(center)[#rect(inset: 0.5em)[$O(2d times d times d)$ spacetime volume]]
+]
+
+== Correlation Surface
+
+_Correlation Surface_ is a set of 2D surfaces in spacetime that represents the correlation
+between logical operators.
+
+#grid(
+  columns: (1fr, 1fr, 1fr),
+  column-gutter: 2em,
+  [
+    #figure(image("images/mzz-correlation-x.png"))
+    $
+      X_1 X_2 X_3 X_4 = (-1)^M
+    $
+  ],
+  [
+    #figure(image("images/mzz-correlation-zz.png", width: 110%))
+    $
+      Z_1 Z_2 = (-1)^(M_(Z Z))
+    $
+  ],
+  [
+    #figure(image("images/mzz-correlation-z.png"))
+    $
+      Z_1 Z_2 = +1
+    $
+  ],
+)
+
 == Universal Gateset: Paulis
 
 Physically we can apply the logical operators $X_L$/$Z_L$ to implement
@@ -329,6 +376,10 @@ $
 In practice, we track a _Pauli Frame_ in software to keep track of the logical
 Pauli gates applied. We reinterpret the subsequent logical measurement outcomes
 based on the Pauli Frame at that time. Therefore, Pauli gates are zero-cost operations.
+
+#place(top + right)[
+  #align(center)[#rect(inset: 0.5em)[zero spacetime volume]]
+]
 
 == Universal Gateset: $H$
 
@@ -358,12 +409,90 @@ $
     #figure(image("images/spatial-h-3d.png"))
   ],
 )
+#place(top + right)[
+  #align(center)[#rect(inset: 0.5em)[$O(d^2 times 1)$ spacetime volume]]
+]
+
+== Universal Gateset: CNOT
+
+#grid(
+  columns: (1fr, 2fr),
+  [
+    #figure(image("images/cnot-by-parity-measurement.png", width: 80%))
+    #figure(image("images/logical_cnot.png", width: 80%))
+  ],
+  [
+    #set align(horizon + center)
+    #grid(
+      columns: (1fr, 1fr),
+      rows: (0.2fr, 1fr),
+      grid.cell(colspan: 2)[
+        $
+          X I arrow.long.r^("CNOT") X X, & #h(2em) I X arrow.long.r^("CNOT") I X \
+          Z I arrow.long.r^("CNOT") Z I, & #h(2em) Z Z arrow.long.r^("CNOT") I Z
+        $
+      ],
+      [
+        #figure(image(
+          "images/logical-cnot-xixx.png",
+          width: 70%,
+        )) $X I arrow.long.r X X$
+      ],
+      [
+        #figure(image(
+          "images/logical-cnot-zziz.png",
+          width: 75%,
+        )) $Z Z arrow.long.r I Z$
+      ],
+    )
+  ],
+)
+
+#place(bottom + right, dx: -40pt, dy: 20pt)[
+  #align(center)[#rect(inset: 0.5em)[$O(3d^2 times 2d)$ spacetime volume]]
+]
 
 == Universal Gateset: $S$
 
-#lorem(30)
+#slide[
+  S gate can be implemented fault-tolerantly by moving the twist defects in surface
+  code with code deformation@brown2017.
 
-== Universal Gateset: CNOT
+  However, it requires separating the twist defects far enough to avoid decreasing
+  the code distance, which needs heavy resource overhead.
+
+  A better way to implement the $S$ gate is by _gate teleportation_, which requires
+  fault-tolerant Y-basis initialization or measurement@gidney2024inplace.
+][
+  #figure(image("images/s-gate-by-moving-twists.png", width: 70%))
+  #figure(image("images/s-gate-teleportation.png", width: 80%))
+]
+
+== Universal Gateset: Y-basis Init/Meas
+
+#grid(
+  columns: (1.2fr, 0.9fr),
+  [
+    #figure(image("images/y-basis-measurement.png", width: 75%))
+    #figure(image("images/y-basis-measurement-simplified.png", width: 75%))
+  ],
+  [
+    + Topologically, $M_Y$ can be implemented by fusing the pairs of twists along
+      diagonal lines.
+
+    + Diagonal movements of twists can be implemented by ending domain walls in the
+      in the bulk of the surface code.
+
+    + Domain walls can be implemented by the walking surface code@mcewen2023 in the bulk.
+
+    #align(center)[#rect(inset: 0.5em)[$O(d^2 times d/2)$ spacetime volume]
+    ]
+  ],
+)
+
+
+
+== Universal Gateset: CZ
 
 #lorem(30)
 
