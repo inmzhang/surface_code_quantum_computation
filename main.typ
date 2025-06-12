@@ -256,23 +256,108 @@ vector. The stabilizer representation comes to rescue.
 
 == Toric Code
 
-#lorem(30)
+#slide[
+  #figure(image("images/toric-code-lattice.png", width: 60%))
+
+  #figure(image("images/toric-code-logical.png", width: 60%))
+][
+  Define stabilizers on a 2D square lattice:
+  $
+    A_v = product_(i in v) X_i, B_f = product_(i in f) Z_i
+  $
+
+  Hamiltonian:
+  $
+    H = - sum_(v in V) A_v - sum_(f in F) B_f
+  $
+  Nontrivial loops define logical operators. Encodes two logical
+  qubits in the Hilbert space: $[[2L^2, L, 2]]$.
+]
 
 == Surface Code
 
-#lorem(30)
+#[
+  #set align(horizon + center)
+  #slide[
+    #figure(image("images/unrotated-surface-code.png", width: 60%))
+    #v(1em)
+    Unrotated Surface Code\
+    $[[2d^2-2d+1, 1, d]]$
+  ][
+    #figure(image("images/rotated-surface-code.png", width: 60%))
+    #v(1em)
+    Rotated Surface Code\
+    $[[2d^2-1, 1, d]]$
+  ]
+]
+
+== Stabilizer Measurements
+
+#slide[
+  #figure(image("images/surface-code-with-schedules.png", width: 80%))
+][
+  #figure(image("images/surface-plaquette-measurement.png"))
+]
+
+== Anyonic Excitations in Surface Code
+
+#slide[
+  #figure(image("images/em-excitation.png", width: 80%))
+][
+  #figure(image("images/surface-code-logicals.png", width: 80%))
+][
+  #figure(image("images/spatial-boundary-3d.png", width: 60%))
+]
+
+== Time Boundaries
+
+#slide[
+  #figure(image("images/initialization.png", width: 80%))
+][
+  #figure(image("images/time-boundary-3d.png", width: 40%))
+]
 
 == Universal Gateset: Paulis
 
-#lorem(30)
+Physically we can apply the logical operators $X_L$/$Z_L$ to implement
+the logical Pauli gates:
 
-== Universal Gateset: Initialization and Measurement
+$
+  X = mat(0, 1; 1, 0), Y = mat(0, -i; i, 0), Z = mat(1, 0; 0, -1)
+$
 
-#lorem(30)
+In practice, we track a _Pauli Frame_ in software to keep track of the logical
+Pauli gates applied. We reinterpret the subsequent logical measurement outcomes
+based on the Pauli Frame at that time. Therefore, Pauli gates are zero-cost operations.
 
 == Universal Gateset: $H$
 
-#lorem(30)
+Hadamard Gate:
+$
+  H = 1 / sqrt(2) mat(1, 1; 1, -1), #h(2em) X arrow.long.l.r^(H) Z
+$
+
+We can construct a _transparent domain wall_ in the bulk of the surface code to realize
+the anyon mapping:
+$
+  e arrow.long.l.r^(phi) m
+$
+
+#grid(
+  columns: (1.3fr, 0.7fr, 1fr, 1fr),
+  [
+    #figure(image("images/temporal-h.png"))
+  ],
+  [
+    #figure(image("images/temporal-h-3d.png", width: 60%))
+  ],
+  [
+    #figure(image("images/spatial-h.png", width: 50%))
+  ],
+  [
+    #figure(image("images/spatial-h-3d.png"))
+  ],
+)
 
 == Universal Gateset: $S$
 
