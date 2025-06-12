@@ -452,6 +452,20 @@ $
   #align(center)[#rect(inset: 0.5em)[$O(3d^2 times 2d)$ spacetime volume]]
 ]
 
+== Universal Gateset: CZ
+
+$
+  X I arrow.long.r^("CZ") X Z, & #h(2em) I X arrow.long.r^("CZ") Z X \
+  Z I arrow.long.r^("CZ") Z I, & #h(2em) I Z arrow.long.r^("CZ") I Z
+$
+#grid(
+  columns: (1fr, 1fr, 1fr),
+  column-gutter: 1em,
+  figure(image("images/logical-cz.png")),
+  figure(image("images/logical-cz-xixz.png", width: 92%)),
+  figure(image("images/logical-cz-ixzx.png", width: 92%)),
+)
+
 == Universal Gateset: $S$
 
 #slide[
@@ -490,25 +504,37 @@ $
   ],
 )
 
+== Universal Gateset: $S$
 
+$
+  Z arrow.long.r^S Z, & #h(2em) X arrow.long.r^S Y \
+$
 
-== Universal Gateset: CZ
+#grid(
+  columns: (1fr, 1fr),
+  figure(image("images/logical-s-3d.png", width: 72%)),
+  figure(image("images/logical-s-correlation.png", width: 80%)),
+)
 
-#lorem(30)
+#place(top + right, dx: 20pt)[
+  #align(center)[#rect(inset: 0.5em)[$O(2d^2 times 1.5d)$ spacetime volume]]
+]
 
 == Universal Gateset: T
 
-#lorem(30)
+Given a high-fidelity logical $|T⟩$ state, we can implement the $T$ gate by
+gate teleportation similar to the $S$ gate:
+
+#figure(image("images/t-gate-teleportation.png", width: 80%))
+
+== $|T⟩$ State Injection and Distillation
+
 
 == Universal Gateset: CCZ
 
 #lorem(30)
 
 == Yoked Surface Code
-
-#lorem(30)
-
-== 3D Spacetime Diagram
 
 #lorem(30)
 
