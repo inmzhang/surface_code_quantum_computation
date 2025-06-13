@@ -287,7 +287,7 @@ vector. The stabilizer representation comes to rescue.
     #figure(image("images/rotated-surface-code.png", width: 60%))
     #v(1em)
     Rotated Surface Code\
-    $[[2d^2-1, 1, d]]$
+    $[[d^2, 1, d]]$
   ]
 ]
 
