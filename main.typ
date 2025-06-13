@@ -527,30 +527,351 @@ gate teleportation similar to the $S$ gate:
 
 #figure(image("images/t-gate-teleportation.png", width: 80%))
 
-== $|T⟩$ State Injection and Distillation
+== Magic State Injection and Distillation
 
+#grid(
+  columns: (0.5fr, 0.5fr, 0.5fr),
+  align: center + horizon,
+  [#figure(image("images/hook-injection.png"))\ Magic State Injection@gidney2023b],
+  [#figure(image("images/15-1-distillation.png", width: 70%)) \ 15-1 Distillation],
+  [#figure(image("images/15-1-distillation-3d.png", width: 60%)) \ 15-1 Distillation in 3D@gidney2019a],
+)
 
-== Universal Gateset: CCZ
+== Magic State Cultivation
 
-#lorem(30)
+#grid(
+  columns: (0.8fr, 1fr),
+  [
+    - Color code has the transversal $H_(X Y)$ gate that can be used to check and
+      post-select the $|T⟩$ state@gidney2024magic.
+
+    - Inject the $|T⟩$ state into the color code, grow the fault distance
+      incrementally during checking the logical values.
+
+    - Escape the magic state into a "grafted" matchable code and increase the host
+      code distance rapidly.
+  ],
+  figure(image("images/cultivation.png")),
+)
+
+---
+
+#figure(image("images/cultivation-spacetime-overhead.png"))
 
 == Yoked Surface Code
 
-#lorem(30)
+In large-scale quantum algorithms, the storage of idling logical qubits contributes
+to a large portion of logical error rate. _Yoked Surface Code_ use the simple idea
+of code concatenation to reduce the overhead of storing logical qubits@gidney2025b.
+
+For 1D yoked surface code, two parity bits are used to check the X and Z parity of the
+row. Therefore, it is a $[[n, n-2, 2]]$ code.
+
+#figure(image("images/yoked-1d.png", width: 80%))
 
 = Surface Code Compilation
 
-== Pauli-based Compilation
+== Logical Circuit Compilation
 
-#lorem(30)
+Given a quantum circuit that express a quantum algorithm/application, logical circuit
+compilation need to:
+
++ Compile it into a circuit/representation consisted of primitive operations that
+  are supported fault-tolerantly by the underlying QECC.
+
++ Map the components in the compiled circuit/representation onto the coordinate
+  space of the logical qubits.
+
++ Give a schedule for the serial/parallel execution of the compiled primitive operations.
+
++ Optimize the compilation with the goal of minimizing the number of logical qubits/algorithm
+  execution time/spacetime volume.
+
+== Sequential Pauli-based Computation
+
+_Sequential Pauli-based Computation_@litinski2019a moves all the Clifford gates to the end of the
+circuit and absorbs them with the final measurements. After that, the circuit consists
+of solely joint Pauli measurements and $pi/8$ multi-Pauli rotations.
+
+#figure(image("images/sequential-pauli-based.png", width: 70%))
+
+---
+#[
+  #set align(center + horizon)
+  *Primitive operations*
+  #grid(
+    columns: (1fr, 1fr),
+    [
+      #figure(image("images/pauli-product-measurement.png", width: 80%))
+      Pauli Product Measurement
+    ],
+    [
+      #figure(image("images/pi-8-rotation.png", width: 80%))
+      $pi/8$ Pauli Rotation by consuming a magic state
+    ],
+  )
+]
+
+#grid(
+  columns: (1.2fr, 1fr),
+  gutter: 2em,
+  align: center + horizon,
+  [
+    #figure(image("images/circuit-as-consequtive-pi-8-rotation.png"))
+    Rewrite circuit as consecutive $pi/8$ rotations
+  ],
+  [
+    #figure(image("images/fast-block.png", width: 80%))
+    Block Layout
+  ],
+)
+
 
 == Clifford + T Compilation
 
-#lorem(30)
+Compile a circuit into gateset {$"Init"_Z, "Init"_X, M_Z, M_X, "CNOT", X, Y, Z, H, S, T$}
+and mapping the gates onto the data blocks with path-finding algorithms to increase
+the parallelism of the circuit execution while maintaining low-weight parity measurements@beverland2022.
+
+#grid(
+  columns: (1fr, 1fr),
+  gutter: 2em,
+  align: center + horizon,
+  [
+    #figure(image("images/bell-pairs-long-cnot.png", width: 80%))
+    #set text(size: 0.8em)
+    Long-range CNOTs with Bell Pairs and parity measurements
+  ],
+  [
+    #figure(image("images/edp.png", width: 50%))
+    #set text(size: 0.8em)
+    Routing parallizable CNOTs with vertex-disjoint paths(VDP) and
+    edge-disjoint paths(EDP).
+  ],
+)
 
 == TQEC Project
 
-#lorem(30)
+_TQEC_ is a project with open community collaboration to develop open-source tools
+for topological quantum error correction. Currently, it mainly focuses on the representation
+and compilation of 2D planar surface codes.
+
+The project is initially organized and led by #link("https://scholar.google.com/citations?user=U6lreOYAAAAJ&hl=en")[Dr. Austin Fowler].
+
+
+#grid(
+  columns: (1fr, 0.2fr),
+  gutter: 2em,
+  align: center,
+  figure(image("images/tqec.png")),
+  [
+    #figure(image("images/austin-fowler.png", width: 50%))
+    #set text(size: 0.8em)
+    Austin Fowler
+  ],
+)
+
+== Block Diagram Representation
+
+A quantum computation is represented by composing the following building blocks
+(not complete). Each block has a carefully
+designed physical circuit associated with it.
+
+#figure(image("images/sketchup.png", width: 40%))
+
+The project focuses on two levels of compilation mediated by the block diagram
+representation.
+
+== Logical-level Compilation
+
+_Logical-level Compilation:_ compile a high-level/intermediate representation of a quantum
+circuit, e.g. circuit/ZX diagram, into a low-level representation that specifies all the
+details needed to layout the circuit onto the hardware (2+1D).
+#figure(image("images/three-cnots-circuit.png", width: 60%))
+
+== Logical Compilation by Hand
+
+#let side-image() = place(top + right, dx: 1em)[
+  #figure(image("images/steane-encoding-circuit.png", width: 30%))
+]
+
+Consider compiling a following #link("https://docs.google.com/presentation/d/184GHX9jffq9dcwWzbku0K90V9xdA8_25lD8pfeEcgRg/edit")[Steane-encoding circuit]:
+
+#figure(image("images/steane-encoding-circuit.png", width: 80%))
+
+We can build it directly in 3D modeling software like #link("https://www.sketchup.com/app")[SketchUp].
+
+---
+
+#figure(image("images/compile-0.png", width: 60%))
+#figure(image("images/compile-1.png", width: 60%))
+#side-image()
+---
+
+#figure(image("images/compile-2.png", width: 50%))
+#figure(image("images/compile-3.png", width: 45%))
+#side-image()
+---
+
+#grid(
+  columns: (1fr, 1fr),
+  gutter: 2em,
+  figure(image("images/compile-4.png", width: 90%)),
+  figure(image("images/compile-5.png")),
+)
+#side-image()
+---
+
+#grid(
+  columns: (1fr, 1fr),
+  gutter: 2em,
+  figure(image("images/compile-6.png")),
+  figure(image("images/compile-7.png")),
+)
+#side-image()
+---
+
+#grid(
+  columns: (1fr, 1fr),
+  gutter: 2em,
+  figure(image("images/compile-8.png")),
+  figure(image("images/compile-9.png")),
+)
+#side-image()
+---
+
+#grid(
+  columns: (1fr, 1fr),
+  gutter: 2em,
+  figure(image("images/compile-10.png")),
+  figure(image("images/compile-11.png")),
+)
+#side-image()
+---
+
+#grid(
+  columns: (1fr, 1fr),
+  gutter: 2em,
+  figure(image("images/compile-12.png")),
+  figure(image("images/compile-13.png")),
+)
+#side-image()
+---
+
+#figure(image("images/compile-14.png", width: 60%))
+#side-image()
+---
+
+#grid(
+  columns: (1fr, 1fr),
+  gutter: 2em,
+  figure(image("images/compile-15.png")),
+  figure(image("images/compile-16.png")),
+)
+---
+
+#slide[
+  #figure(image("images/compile-17.png", width: 80%))
+][
+  - compiled spacetime volume: 16
+
+  - spacetime symmetry in this computation
+
+  - all circuit element like CNOT, H, Initialization, Measurement is deformed
+    into blocks.
+
+  - inputs/outputs can be moved to connect to the rest of the algorithm.
+]
+
+== ZX-Calculus
+
+_The ZX-calculus_@vandewetering2020 is a graphical language that goes beyond circuit diagrams.
+It splits the atom of well-known quantum logic gates to reveal the compositional
+structure inside.
+
+#figure(image("images/spiders.png", width: 45%))
+
+#figure(image("images/zx-rules.png", width: 50%))
+
+---
+
+ZX-calculs can be a language of surface code lattice surgery.
+
+#grid(
+  columns: (1fr, 1fr),
+  gutter: 2em,
+  figure(image("images/zx-surface.png", width: 70%)),
+  figure(image("images/zx-rules-rgb.png", width: 80%)),
+)
+
+== Compile with ZX-Calculus
+
+#figure(image("images/zx-repr-steane-encoding.png", width: 80%))
+#side-image()
+
+---
+
+#grid(
+  columns: (1fr, 1fr),
+  rows: (1fr, 1fr, 1fr),
+  gutter: 2em,
+  figure(image("images/zx-compile-0.png")),
+  figure(image("images/zx-compile-1.png")),
+
+  figure(image("images/zx-compile-2.png")),
+  figure(image("images/zx-compile-3.png")),
+
+  figure(image("images/zx-compile-4.png", width: 90%)),
+  figure(image("images/zx-compile-5.png", width: 30%)),
+)
+
+---
+
+#grid(
+  columns: (1fr, 1fr, 1.2fr),
+  gutter: 2em,
+
+  figure(image("images/zx-compile-5.png")),
+  figure(image("images/zx-compile-6.png")),
+  figure(image("images/zx-compile-3d.png")),
+)
+
+== Physical-level Compilation
+
+_Physical-level Compilation:_ compile the low-level representation into a sequence of physical
+gate instructions that can be executed directly on the hardware.
+
+Physical-level compilation takes care of composing the circuit blocks to generate
+a fault-tolerant circuit annotated with correct detectors and observables.
+
+#figure(image("images/memory-to-circuit.png", width: 80%))
+
+---
+#grid(
+  columns: (1fr, 1fr),
+  rows: (1fr, 1fr),
+  gutter: 2em,
+  figure(image("images/IXIX.png")), figure(image("images/XIXX.png")),
+  figure(image("images/IZZZ.png")), figure(image("images/ZIZI.png")),
+)
+
+== Current Status and Future Work
+
+*Current Status:*
+- All Clifford block circuits except Y-basis initialization and measurement.
+- Algorithm combined with SAT solver for circuit detectors automation.
+- Algorithm for finding the minimal generating set of correlation surfaces in the
+  Clifford computation.
+- Can successfully compile the Steane-encoding block diagram above into physical
+  circuit that can be simulated with `stim`@gidney2021.
+- A greedy graph algorithm for compiling a ZX-diagram into a valid block diagram.
+
+*Future Works:*
+- Support Y-basis initialization and measurement and magic state cultivation blocks.
+- More general algorithm for finding the correlation surfaces in universal quantum
+  circuits and returning time ordering of the non-Clifford gates.
+- More efficient algorithm for logical compilation. Explore alternative intermediate
+  representations like `Quon`@feng2025quon.
 
 #focus-slide[
   Thanks for your attention!
